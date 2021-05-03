@@ -6,10 +6,13 @@ import { getUploadedImages } from '../actions/catActions'
 import Cat from '../models/cat';
 import confusedCat from './confused-cat-clipart.png'
 import React from 'react';
+import { RootState } from "../store";
+import Loader from 'react-loader-spinner';
 
-type Props = { cats: Cat[], getUploadedImages: any };
-const mapStateToProps = (state: any, ownProps: any) => { 
-    return ({ cats: state.cats });
+type Props = { cats: Cat[], isLoadingData: boolean, getUploadedImages: any };
+
+const mapStateToProps = (state: RootState, ownProps: any) => { 
+    return ({ cats: state.cats.cats, isLoadingData: state.cats.isLoadingData });
 }
 const mapDispatchToProps = (dispatch: any) => {
     return bindActionCreators(
@@ -40,8 +43,29 @@ function CatsList(props: Props){
                 rel="noopener noreferrer">
                 Learn React
             </a>
+            <Loader
+                type="Puff"
+                color="#00BFFF"
+                height={100}
+                width={100}
+                timeout={3000} //3 secs
+            />
         </div>
     );
+}
+
+function LoadingCats() {
+    return (
+        <Loader
+            type="Puff"
+            color="#00BFFF"
+            height={100}
+            width={100}
+        />);
+}
+
+function CatsContent(props: Props) {
+    return (props.cats.length === 0 ? <NoCatsLoaded /> : <CatsList {...props}/>);
 }
 
 class Home extends React.Component<Props> {
@@ -52,7 +76,7 @@ class Home extends React.Component<Props> {
     render(){
         return (
             <div className="Home">
-                {this.props.cats.length === 0 ? <NoCatsLoaded /> : <CatsList {...this.props}/>}
+                {this.props.isLoadingData ? <LoadingCats /> : <CatsContent {...this.props}/>}
             </div>
           );
     }
