@@ -9,7 +9,7 @@ import React from 'react';
 import { RootState } from "../store";
 import Loader from 'react-loader-spinner';
 
-type Props = { cats: Cat[], isLoadingData: boolean, getUploadedImages: any };
+type Props = { cats: Cat[], isLoadingData: boolean, getUploadedImages: Function };
 
 const mapStateToProps = (state: RootState, ownProps: any) => { 
     return ({ cats: state.cats.cats, isLoadingData: state.cats.isLoadingData });
@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch: any) => {
     return bindActionCreators(
         { getUploadedImages },
         dispatch);
-  }
+}
 
 function NoCatsLoaded() {
     return (
@@ -32,24 +32,7 @@ function NoCatsLoaded() {
 function CatsList(props: Props){
     return (
         <div>
-            <Button>bootstrap button </Button>
-            <p>
-                Edit <code>src/App.tsx</code> and save to reload.
-            </p>
-            <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer">
-                Learn React
-            </a>
-            <Loader
-                type="Puff"
-                color="#00BFFF"
-                height={100}
-                width={100}
-                timeout={3000} //3 secs
-            />
+            {props.cats.map((cat, idx) => (<img src={cat.url} key={ idx }alt={cat.id} />))}
         </div>
     );
 }
