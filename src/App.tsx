@@ -7,8 +7,8 @@ import {
   Link
 } from "react-router-dom";
 
-import UploadImage from './UploadImage/UploadImage';
-import Home from './Home/Home';
+import UploadImage from './components/UploadImage/UploadImage';
+import Home from './components/Home/Home';
 import { Navbar, Nav } from 'react-bootstrap';
 
 import Logo from './Logo.png'

@@ -1,0 +1,17 @@
+.image-gallery > .image {
+    width: 100%;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+    .image-gallery > .image {
+        width: 33%;
+    }
+ }
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+    .image-gallery > .image {
+        width: 25%;
+    }
+ }

@@ -2,12 +2,15 @@ import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom';
-import { getUploadedImages } from '../actions/catActions'
-import Cat from '../models/cat';
+import { getUploadedImages } from '../../actions/catActions'
+import Cat from '../../models/cat';
 import confusedCat from './confused-cat-clipart.png'
 import React from 'react';
-import { RootState } from "../store";
+import { RootState } from "../../store";
 import Loader from 'react-loader-spinner';
+import ImageGallery from '../ImageGallery/ImageGallery';
+
+import './Home.css'
 
 type Props = { cats: Cat[], isLoadingData: boolean, getUploadedImages: Function };
 
@@ -31,10 +34,9 @@ function NoCatsLoaded() {
 
 function CatsList(props: Props){
     return (
-        <div>
-            {props.cats.map((cat, idx) => (<img src={cat.url} key={ idx }alt={cat.id} />))}
-        </div>
-    );
+        <div className="cats-list-wrapper">
+            <ImageGallery images={props.cats.map(cat => cat.url)}/>
+        </div>);
 }
 
 function LoadingCats() {

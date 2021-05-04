@@ -2,7 +2,7 @@ import React from 'react';
 import ImageUploader from 'react-images-upload';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { uploadImage } from '../actions/catActions';
+import { uploadImage } from '../../actions/catActions';
 
 type State = { picture: any };
 type Props = { uploadImage: Function };
