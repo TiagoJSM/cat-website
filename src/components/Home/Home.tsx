@@ -2,8 +2,8 @@ import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom';
-import { getUploadedImages } from '../../actions/catActions'
-import Cat from '../../models/cat';
+import { getUploadedImages, favouriteImage, unfavouriteImage } from '../../actions/catActions'
+import Image from '../../models/image';
 import confusedCat from './confused-cat-clipart.png'
 import React from 'react';
 import { RootState } from "../../store";
@@ -12,14 +12,20 @@ import ImageGallery from '../ImageGallery/ImageGallery';
 
 import './Home.css'
 
-type Props = { cats: Cat[], isLoadingData: boolean, getUploadedImages: Function };
+type Props = { 
+    images: Image[], 
+    isLoadingData: boolean, 
+    getUploadedImages: Function,
+    favouriteImage: Function,
+    unfavouriteImage: Function
+};
 
 const mapStateToProps = (state: RootState, ownProps: any) => { 
-    return ({ cats: state.cats.cats, isLoadingData: state.cats.isLoadingData });
+    return ({ images: state.cats.images, isLoadingData: state.cats.isLoadingData });
 }
 const mapDispatchToProps = (dispatch: any) => {
     return bindActionCreators(
-        { getUploadedImages },
+        { getUploadedImages, favouriteImage, unfavouriteImage },
         dispatch);
 }
 
@@ -35,7 +41,7 @@ function NoCatsLoaded() {
 function CatsList(props: Props){
     return (
         <div className="cats-list-wrapper">
-            <ImageGallery images={props.cats.map(cat => cat.url)}/>
+            <ImageGallery images={props.images} favouriteImage={props.favouriteImage} unfavouriteImage={props.unfavouriteImage} />
         </div>);
 }
 
@@ -50,7 +56,7 @@ function LoadingCats() {
 }
 
 function CatsContent(props: Props) {
-    return (props.cats.length === 0 ? <NoCatsLoaded /> : <CatsList {...props}/>);
+    return (props.images.length === 0 ? <NoCatsLoaded /> : <CatsList {...props}/>);
 }
 
 class Home extends React.Component<Props> {
