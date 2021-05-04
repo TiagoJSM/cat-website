@@ -6,6 +6,7 @@ export const GET_UPLOADED_IMAGES_STARTED = "GET_UPLOADED_IMAGES_STARTED";
 export const GET_UPLOADED_IMAGES_SUCCESS = "GET_UPLOADED_IMAGES_SUCCESS";
 export const GET_UPLOADED_IMAGES_FAILURE = "GET_UPLOADED_IMAGES_FAILURE";
 export const SET_IMAGE_FAVOURITE_STATE = "SET_IMAGE_FAVOURITE_STATE";
+export const VOTE_IMAGE = "VOTE_IMAGE";
 
 let axiosInstance: AxiosInstance;
 
@@ -28,14 +29,20 @@ export const getUploadedImages = () => {
         try{
             const imagesResult = await instance.get(`/images?limit=100`);
             const favoritesResult = await instance.get(`/favourites`);
+            const votesResult = await instance.get(`/votes`);
 
-            const imagesData = imagesResult.data.map((cat: any) => {
-                const favouriteData = favoritesResult.data.find((f: any) => f.image_id === cat.id)
+            const imagesData = imagesResult.data.map((img: any) => {
+                const favouriteData = favoritesResult.data.find((f: any) => f.image_id === img.id);
+                const voteCount = votesResult
+                    .data
+                    .filter((v: any) => v.image_id === img.id)
+                    .reduce((sum: number, current: any) => sum + (current.value === 1 ? 1 : -1), 0);
                 return {
-                    id: cat.id,
-                    url: cat.url,
+                    id: img.id,
+                    url: img.url,
                     favourite: favouriteData != null,
-                    favouriteId: favouriteData != null ? favouriteData.id : null
+                    favouriteId: favouriteData != null ? favouriteData.id : null,
+                    voteCount: voteCount
                 } as Image;
             });
 
@@ -105,6 +112,31 @@ export const unfavouriteImage = (imageId: string) => {
     };
 };
 
+enum VoteType {
+    Up,
+    Down
+}
+
+const voteImage = (imageId: string, voteType: VoteType) => {
+    return (dispatch: any) => {
+        GetAxiosInstance()
+            .post(`votes`, { image_id: imageId, value: voteType === VoteType.Up ? 1 : 0 })
+            .then(res => {
+                dispatch(voteImageAction(imageId, voteType === VoteType.Up ? 1 : -1));
+            })
+            .catch(err => {
+                //dispatch(setImageFavouriteState(imageId, false));
+            });
+    };
+};
+
+export const upvoteImage = (imageId: string) => {
+    return voteImage(imageId, VoteType.Up);
+}
+export const downvoteImage = (imageId: string) => {
+    return voteImage(imageId, VoteType.Down);
+}
+
 const getUploadedImagesSuccess = (images: Image[]) => ({
     type: GET_UPLOADED_IMAGES_SUCCESS,
     payload: images
@@ -127,5 +159,13 @@ const setImageFavouriteState = (imageId: string, favourite: boolean, favouriteId
         imageId,
         favourite,
         favouriteId
+    }
+});
+
+const voteImageAction = (imageId: string, voteValue: number) => ({
+    type: VOTE_IMAGE,
+    payload: {
+        imageId,
+        voteValue
     }
 });

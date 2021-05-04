@@ -1,8 +1,7 @@
-import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom';
-import { getUploadedImages, favouriteImage, unfavouriteImage } from '../../actions/catActions'
+import { getUploadedImages, favouriteImage, unfavouriteImage, upvoteImage, downvoteImage } from '../../actions/catActions'
 import Image from '../../models/image';
 import confusedCat from './confused-cat-clipart.png'
 import React from 'react';
@@ -17,7 +16,9 @@ type Props = {
     isLoadingData: boolean, 
     getUploadedImages: Function,
     favouriteImage: Function,
-    unfavouriteImage: Function
+    unfavouriteImage: Function,
+    upvoteImage: Function,
+    downvoteImage: Function 
 };
 
 const mapStateToProps = (state: RootState, ownProps: any) => { 
@@ -25,7 +26,7 @@ const mapStateToProps = (state: RootState, ownProps: any) => {
 }
 const mapDispatchToProps = (dispatch: any) => {
     return bindActionCreators(
-        { getUploadedImages, favouriteImage, unfavouriteImage },
+        { getUploadedImages, favouriteImage, unfavouriteImage, upvoteImage, downvoteImage },
         dispatch);
 }
 
@@ -38,10 +39,16 @@ function NoCatsLoaded() {
     );
 }
 
-function CatsList(props: Props){
+function CatsList(props: Props) {
+    const { images, favouriteImage, unfavouriteImage, upvoteImage, downvoteImage} = props;
     return (
         <div className="cats-list-wrapper">
-            <ImageGallery images={props.images} favouriteImage={props.favouriteImage} unfavouriteImage={props.unfavouriteImage} />
+            <ImageGallery 
+                images={images} 
+                favouriteImage={favouriteImage} 
+                unfavouriteImage={unfavouriteImage}
+                upvote={upvoteImage}
+                downvote={downvoteImage} />
         </div>);
 }
 

@@ -1,7 +1,12 @@
 import { AnyAction } from 'redux';
 import Image from '../models/image';
 
-import { GET_UPLOADED_IMAGES_STARTED, GET_UPLOADED_IMAGES_SUCCESS, GET_UPLOADED_IMAGES_FAILURE, SET_IMAGE_FAVOURITE_STATE } from "../actions/catActions";
+import { 
+  GET_UPLOADED_IMAGES_STARTED, 
+  GET_UPLOADED_IMAGES_SUCCESS, 
+  GET_UPLOADED_IMAGES_FAILURE, 
+  SET_IMAGE_FAVOURITE_STATE,
+  VOTE_IMAGE } from "../actions/catActions";
 
 interface ImagesState {
   images: Image[];
@@ -29,6 +34,12 @@ export default function(state = initialState, action: AnyAction) {
         ...state, 
         images: state.images.map(
           i => i.id === payload.imageId ? ({ ...i, favourite: payload.favourite, favouriteId: payload.favouriteId}) : i) 
+      };
+    case VOTE_IMAGE:
+      return { 
+        ...state, 
+        images: state.images.map(
+          i => i.id === payload.imageId ? ({ ...i, voteCount: i.voteCount + payload.voteValue}) : i) 
       };
     default:
       return state;
