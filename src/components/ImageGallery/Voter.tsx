@@ -1,6 +1,6 @@
 import Button from 'react-bootstrap/Button';
 
-import './ImageGallery.css';
+import './Voter.css';
 
 type Props = { 
     voteCount: number,
@@ -13,7 +13,7 @@ function Voter(props: Props) {
     return (
         <div className="voter">
             <Button onClick={(e: any) => upvote()}>Upvote</Button>
-            <div>{voteCount}</div>
+            <div className="vote-count">{voteCount}</div>
             <Button onClick={(e: any) => downvote()}>Downvote</Button>
         </div>
     );

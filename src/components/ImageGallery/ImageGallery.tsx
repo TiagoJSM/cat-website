@@ -19,10 +19,12 @@ function ImageGallery(props: Props) {
     return (
         <div className="image-gallery">
             {images.map((image, idx) => (
-                <div key={ idx } className="image-wrapper">
+                <div key={ idx } className="image-wrapper gallery-cell">
                     <img src={image.url} />
-                    <Heart isClick={image.favourite} onClick={() => image.favourite ? unfavouriteImage(image.id) : favouriteImage(image.id) }/>
-                    <Voter voteCount={image.voteCount} upvote={() => upvote(image.id)} downvote={() => downvote(image.id)}/>
+                    <div className="image-controls">
+                        <Heart isClick={image.favourite} onClick={() => image.favourite ? unfavouriteImage(image.id) : favouriteImage(image.id) }/>
+                        <Voter voteCount={image.voteCount} upvote={() => upvote(image.id)} downvote={() => downvote(image.id)}/>
+                    </div>
                 </div>
             ))}
         </div>

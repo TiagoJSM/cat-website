@@ -1,3 +1,7 @@
 .cats-list-wrapper {
     margin: 0 30px;
 }
+
+.cats-list-wrapper {
+    margin-top: 12px;
+}

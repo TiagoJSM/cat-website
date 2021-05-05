@@ -1,0 +1,10 @@
+.voter {
+    display: flex;
+    justify-content: center;
+}
+
+.voter > .vote-count {
+    margin: 0 6px;
+    color: #3b5cbb;
+    font-weight: bold;
+}
