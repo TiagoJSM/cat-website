@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import catApi, { VoteType } from '../api/catApi';
 import Image from '../models/image';
 import { RootState } from '../store';
 
@@ -8,28 +8,16 @@ export const GET_UPLOADED_IMAGES_FAILURE = "GET_UPLOADED_IMAGES_FAILURE";
 export const SET_IMAGE_FAVOURITE_STATE = "SET_IMAGE_FAVOURITE_STATE";
 export const VOTE_IMAGE = "VOTE_IMAGE";
 
-let axiosInstance: AxiosInstance;
-
-function GetAxiosInstance() {
-    if(axiosInstance === undefined)
-    {
-        axiosInstance = axios.create({
-            baseURL: 'https://api.thecatapi.com/v1/',
-            headers: {'x-api-key': '0c1d5ef5-ffba-4abb-96c5-5c637bd24071'}
-        });
-    }
-    return axiosInstance;
-}
-
 export const getUploadedImages = () => {
     return async (dispatch: any) => {
         dispatch(getUploadedImagesStarted());
 
-        const instance = GetAxiosInstance();
         try{
-            const imagesResult = await instance.get(`/images?limit=100`);
-            const favoritesResult = await instance.get(`/favourites`);
-            const votesResult = await instance.get(`/votes`);
+            const getImagesPromise = catApi.getImages();
+            const getFavouritesPromise = catApi.getFavorites();
+            const getVotesPromise = catApi.getVotes();
+
+            const [imagesResult, favoritesResult, votesResult] = await Promise.all([getImagesPromise, getFavouritesPromise, getVotesPromise]);
 
             const imagesData = imagesResult.data.map((img: any) => {
                 const favouriteData = favoritesResult.data.find((f: any) => f.image_id === img.id);
@@ -59,14 +47,8 @@ export const uploadImage = (file: any) => {
     return (dispatch: any) => {
         dispatch(getUploadedImagesStarted());
 
-        const headers = {
-            'Content-Type':'multipart/form-data'
-        };
-        var formData = new FormData();
-        formData.append("file", file);
-
-        GetAxiosInstance()
-            .post(`images/upload`, formData, { headers: headers })
+        catApi
+            .addImage(file)
             .then(res => {
                 //dispatch(getUploadedImagesSuccess(res.data));
             })
@@ -79,8 +61,9 @@ export const uploadImage = (file: any) => {
 export const favouriteImage = (imageId: string) => {
     return (dispatch: any) => {
         dispatch(setImageFavouriteState(imageId, true));
-        GetAxiosInstance()
-            .post(`favourites`, { image_id: imageId })
+
+        catApi
+            .addFavourite(imageId)
             .then(res => {
                 dispatch(setImageFavouriteState(imageId, true, res.data.id));
             })
@@ -100,8 +83,8 @@ export const unfavouriteImage = (imageId: string) => {
         {
             dispatch(setImageFavouriteState(imageId, false));
 
-            GetAxiosInstance()
-                .delete(`favourites/${image.favouriteId}`)
+            catApi
+                .deleteFavourite(image.favouriteId)
                 .then(res => {
                     dispatch(setImageFavouriteState(imageId, false));
                 })
@@ -112,15 +95,10 @@ export const unfavouriteImage = (imageId: string) => {
     };
 };
 
-enum VoteType {
-    Up,
-    Down
-}
-
 const voteImage = (imageId: string, voteType: VoteType) => {
     return (dispatch: any) => {
-        GetAxiosInstance()
-            .post(`votes`, { image_id: imageId, value: voteType === VoteType.Up ? 1 : 0 })
+          catApi
+            .addVote(imageId, voteType)
             .then(res => {
                 dispatch(voteImageAction(imageId, voteType === VoteType.Up ? 1 : -1));
             })

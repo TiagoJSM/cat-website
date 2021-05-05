@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { uploadImage } from '../../actions/catActions';
 
-type State = { picture: any };
+type State = { picture: any, uploading: boolean };
 type Props = { uploadImage: Function };
 
 const mapStateToProps = () => { 
@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: any) => {
 class UploadImage extends React.Component<Props, State> {
   constructor(props: any) {
     super(props);
-     this.state = { picture: undefined };
+     this.state = { picture: undefined, uploading: false };
   }
 
   onChange = (picture: any[]) => {
