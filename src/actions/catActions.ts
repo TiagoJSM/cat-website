@@ -87,9 +87,6 @@ const voteImage = (imageId: string, voteType: VoteType) => {
             .then(res => {
                 dispatch(voteImageAction(imageId, voteType === VoteType.Up ? 1 : -1));
             })
-            .catch(err => {
-                //dispatch(setImageFavouriteState(imageId, false));
-            });
     };
 };
 

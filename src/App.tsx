@@ -4,7 +4,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
 
 import UploadImage from './components/UploadImage/UploadImage';
@@ -24,8 +23,6 @@ function Navigation() {
           <Nav className="mr-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/upload">Upload</Nav.Link>
-            {/* <Link to="/">Home</Link>
-            <Link to="/upload">Upload</Link> */}
           </Nav>
       </Navbar.Collapse>
     </Navbar>
@@ -38,17 +35,6 @@ function App() {
       <Router>
         <header className="App-header">
           <Navigation />
-          {/* <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/upload">Upload</Link>
-              </li>
-            </ul>
-          </nav> */}
-          
         </header>
         <main className="App-content">
           <Switch>
