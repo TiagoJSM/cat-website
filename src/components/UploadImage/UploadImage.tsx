@@ -1,19 +1,15 @@
 import React from 'react';
 import ImageUploader from 'react-images-upload';
+import Loader from 'react-loader-spinner';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { uploadImage } from '../../actions/catActions';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import catApi from '../../api/catApi';
 
 type State = { picture: any, uploading: boolean };
-type Props = { uploadImage: Function };
+type Props = RouteComponentProps<any>;
 
 const mapStateToProps = () => { 
   return ({ });
-}
-const mapDispatchToProps = (dispatch: any) => {
-  return bindActionCreators(
-      { uploadImage },
-      dispatch);
 }
 
 class UploadImage extends React.Component<Props, State> {
@@ -24,17 +20,32 @@ class UploadImage extends React.Component<Props, State> {
 
   onChange = (picture: any[]) => {
       this.setState({
-          picture: picture.length > 0 ? picture[0] : null,
+        picture: picture.length > 0 ? picture[0] : null,
       });
 
       if(picture.length > 0)
       {
-        this.props.uploadImage(picture[0]);
+        this.setState({ uploading: true})
+        catApi.addImage(picture[0])
+          .then(res => {
+            this.props.history.push('/')
+          })
+          .catch(err => {
+         
+          });
       }
   }
 
-  render(){
+  render = () => {
+    const { uploading } = this.state;
       return (
+        uploading ?
+        <Loader
+            type="Puff"
+            color="#00BFFF"
+            height={100}
+            width={100}
+        /> :
         <ImageUploader
               withIcon
               withPreview
@@ -44,8 +55,8 @@ class UploadImage extends React.Component<Props, State> {
               imgExtension={['.jpg', '.png']}
               maxFileSize={5242880}
           />
-        );
+      );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UploadImage);
+export default withRouter(connect(mapStateToProps)(UploadImage));

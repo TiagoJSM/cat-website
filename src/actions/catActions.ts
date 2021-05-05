@@ -43,21 +43,6 @@ export const getUploadedImages = () => {
     };
 };
 
-export const uploadImage = (file: any) => {
-    return (dispatch: any) => {
-        dispatch(getUploadedImagesStarted());
-
-        catApi
-            .addImage(file)
-            .then(res => {
-                //dispatch(getUploadedImagesSuccess(res.data));
-            })
-            .catch(err => {
-                //dispatch(getUploadedImagesFailure(err.message));
-            });
-    };
-};
-
 export const favouriteImage = (imageId: string) => {
     return (dispatch: any) => {
         dispatch(setImageFavouriteState(imageId, true));
